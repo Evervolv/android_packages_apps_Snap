@@ -42,6 +42,7 @@ LOCAL_PACKAGE_NAME := Snap
 LOCAL_PRIVILEGED_MODULE := true
 LOCAL_PRIVATE_PLATFORM_APIS := true
 LOCAL_CERTIFICATE := platform
+LOCAL_PRODUCT_MODULE := true
 
 LOCAL_AAPT_FLAGS += --rename-manifest-package org.lineageos.snap
 
@@ -70,7 +71,8 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := privapp_whitelist_org.lineageos.snap.xml
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)/permissions
+LOCAL_MODULE_PATH := $(TARGET_OUT_PRODUCT_ETC)/permissions
+LOCAL_PRODUCT_MODULE := true
 LOCAL_SRC_FILES := $(LOCAL_MODULE)
 include $(BUILD_PREBUILT)
 
