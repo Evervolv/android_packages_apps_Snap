@@ -251,6 +251,7 @@ public class SettingsManager implements ListMenu.SettingsListener {
     private boolean mIsFrontCameraPresent = false;
     private boolean mHasMultiCamera = false;
     private boolean mIsHFRSupported = false;
+    private boolean mIsHFRSupportedOnCurrentResolution = false;
     private JSONObject mDependency;
     private int mCameraId;
     private Set<String> mFilteredKeys;
@@ -1523,6 +1524,10 @@ public class SettingsManager implements ListMenu.SettingsListener {
         return mIsHFRSupported;
     }
 
+    public boolean isHFRSupportedOnCurrentResolution() {
+        return mIsHFRSupportedOnCurrentResolution;
+    }
+
     private void filterVideoEncoderProfileOptions() {
         ListPreference videoEncoderProfilePref =
                 mPreferenceGroup.findPreference(KEY_VIDEO_ENCODER_PROFILE);
@@ -1693,12 +1698,14 @@ public class SettingsManager implements ListMenu.SettingsListener {
                                 rate = String.valueOf(r.getUpper());
                                 supported.add("hfr" + rate);
                                 supported.add("hsr" + rate);
+                                mIsHFRSupportedOnCurrentResolution = true;
                             }
                         }
                     }
                 }
             } catch (IllegalArgumentException ex) {
                 Log.w(TAG, "HFR is not supported for this resolution " + ex);
+                mIsHFRSupportedOnCurrentResolution = false;
             }
             if (mExtendedHFRSize != null && mExtendedHFRSize.length >= 3) {
                 for (int i = 0; i < mExtendedHFRSize.length; i += 3) {
