@@ -348,6 +348,17 @@ public class SettingsManager implements ListMenu.SettingsListener {
         mHeifWriterSupported = isHeifWriterSupported();
     }
 
+    public void reloadCharacteristics(int cameraId){
+        CameraManager manager = (CameraManager) mContext.getSystemService(Context.CAMERA_SERVICE);
+        try {
+            CameraCharacteristics characteristics
+                    = manager.getCameraCharacteristics(String.valueOf(cameraId));
+            mCharacteristics.set(cameraId, characteristics);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static SettingsManager createInstance(Context context) {
         if (sInstance == null) {
             sInstance = new SettingsManager(context.getApplicationContext());
@@ -444,6 +455,7 @@ public class SettingsManager implements ListMenu.SettingsListener {
         final int cameraId = getInitialCameraId();
         setLocalIdAndInitialize(cameraId);
         autoTestBroadcast(cameraId);
+        reloadCharacteristics(cameraId);
     }
 
     public void reinit(int cameraId) {
@@ -939,6 +951,22 @@ public class SettingsManager implements ListMenu.SettingsListener {
             result = true;
         }
         return result;
+    }
+
+    public void setProModeSliderValueForAutTest(String key, String value) {
+        float valueF = 1.0f;
+        try {
+            valueF = Float.parseFloat(value);
+        } catch(NumberFormatException e) {
+            Log.w(TAG, "setProModeSliderValueForAutTest type incorrect value ");
+        }
+        String prefName = ComboPreferences.getLocalSharedPreferencesName(mContext,
+                getCurrentPrepNameKey());
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(prefName,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putFloat(key, valueF);
+        editor.commit();
     }
 
     public float getProModeSliderValue(String key, float defaultValue) {
